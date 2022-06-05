@@ -25,6 +25,8 @@ void GameScene::Initialize() {
 	//デバックカメラの生成
 	//debugCamera_ = new DebugCamera(1280, 720);
 
+	viewProjection_.Initialize();
+
 	////軸方向表示の有効化
 	//AxisIndicator::GetInstance()->SetVisible(true);
 	////軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
@@ -43,7 +45,7 @@ void GameScene::Update() {
 	//debugCamera_->Update();
 
 	// 自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 }
 
 void GameScene::Draw() {
@@ -78,7 +80,7 @@ void GameScene::Draw() {
 	// model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 
 	// 自キャラの描画
-	player_->Draw();
+	player_->Draw(viewProjection_);
 
 	//ラインの描画
 

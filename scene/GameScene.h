@@ -56,6 +56,8 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	uint32_t reticleHandle_ = 0;
 
+	ViewProjection viewProjection_;
+
 	//
 	Sprite* sprite_ = nullptr;
 

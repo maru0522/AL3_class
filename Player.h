@@ -13,9 +13,9 @@ public:
 	// 移動
 	void Move();
 	// 更新
-	void Update();
+	void Update(ViewProjection viewProjection);
 	// 描画
-	void Draw();
+	void Draw(ViewProjection viewProjection);
 
 private:
 	// ワールド変換データ
