@@ -32,6 +32,8 @@ public: // メンバ関数
 	void EyeMove();
 	void TargetMove();
 	void UpRot();
+	void SetFovAngleY();
+	void SetNearZ();
 
 	/// <summary>
 	/// 初期化

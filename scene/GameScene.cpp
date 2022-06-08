@@ -5,6 +5,9 @@
 #include <cassert>
 #include <random>
 
+#define RADIANS(deg) (deg * PI / 180)
+#define DEGREES(radian) (180 / PI * radian)
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -169,6 +172,45 @@ void GameScene::UpRot()
 	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
 }
 
+void GameScene::SetFovAngleY()
+{
+	// FOV変更処理
+		// 上キーで視野角が広がる
+		if (input_->PushKey(DIK_UP)) {
+			viewProjection_.fovAngleY += 0.01f;
+			viewProjection_.fovAngleY = min(PI, viewProjection_.fovAngleY);
+		}
+		// 下キーで視野角が狭まる
+		if (input_->PushKey(DIK_DOWN)) {
+			viewProjection_.fovAngleY -= 0.01f;
+			viewProjection_.fovAngleY = max(0.01f, viewProjection_.fovAngleY);
+		}
+
+		// 行列の再計算
+		viewProjection_.UpdateMatrix();
+
+		debugText_->SetPos(50, 110);
+		debugText_->Printf("fovAngleY(Degree):%f", DEGREES(viewProjection_.fovAngleY));
+}
+
+void GameScene::SetNearZ()
+{
+	// クリップ距離変更処理
+		// 上下キーでニアクリップ距離を増減
+		if (input_->PushKey(DIK_UP)) {
+			viewProjection_.nearZ += 0.5f;
+		}
+		if (input_->PushKey(DIK_DOWN)) {
+			viewProjection_.nearZ -= 0.5f;
+		}
+
+		// 行列の再計算
+		viewProjection_.UpdateMatrix();
+
+		debugText_->SetPos(50, 130);
+		debugText_->Printf("nearZ:%f", viewProjection_.nearZ);
+}
+
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -181,12 +223,15 @@ void GameScene::Initialize() {
 
 	Afiin();
 
-	//viewProjection_.eye = { 0,0,-10 };
+	//viewProjection_.fovAngleY = RADIANS(10);
 
-	viewProjection_.target = { 10,0,0 };
+	// アスペクト比を設定
+	viewProjection_.aspectRatio = 1.0f;
 
-	// カメラ上方向ベクトルを設定（右上45度指定）
-	viewProjection_.up = { cosf(PI / 4.0f),sinf(PI / 4.0f),0.0f };
+	// ニアクリップ距離を設定
+	viewProjection_.nearZ = 52.0f;
+	// ファークリップ距離を設定
+	viewProjection_.farZ = 53.0f;
 
 
 	//ビュープロジェクションの初期化
@@ -207,9 +252,8 @@ void GameScene::Update() {
 	//デバックカメラの更新
 	debugCamera_->Update();
 
-	EyeMove();
-	TargetMove();
-	UpRot();
+	//SetFovAngleY();
+	SetNearZ();
 }
 
 void GameScene::Draw() {
