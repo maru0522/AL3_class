@@ -28,6 +28,11 @@ public: // メンバ関数
 	/// </summary>
 	~GameScene();
 
+	void Afiin();
+	void EyeMove();
+	void TargetMove();
+	void UpRot();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -64,6 +69,9 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 
 	float PI = 3.141592f;
+
+	// カメラ上方向の角度
+	float viewAngle = 0.0f;
 
 	/// <summary>
 	/// ゲームシーン用
