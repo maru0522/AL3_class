@@ -37,58 +37,7 @@ void GameScene::Afiin()
 		// X, Y, Z 軸周りの平行移動を設定
 		worldTransform.translation_ = { posDist(engin),posDist(engin),posDist(engin) };
 
-		// スケーリング行列を宣言
-		Matrix4 matScale;
-		// スケーリング倍率を行列に設定する
-		matScale = { worldTransform.scale_.x, 0.0f, 0.0f, 0.0f,//x
-					 0.0f, worldTransform.scale_.y, 0.0f, 0.0f,//y
-					 0.0f, 0.0f, worldTransform.scale_.z, 0.0f,//z
-					 0.0f, 0.0f, 0.0f, 1.0f };
-		// 合成用回転行列を宣言
-		Matrix4 matRot;
-		// 各軸用回転行列を宣言
-		Matrix4 matRotX, matRotY, matRotZ;
-
-		// Z軸回転行列の各要素を設定する
-		matRotZ = { cos(worldTransform.rotation_.z), sin(worldTransform.rotation_.z), 0.0f, 0.0f,	//x
-					-sin(worldTransform.rotation_.z), cos(worldTransform.rotation_.z), 0.0f, 0.0f,//y
-					0.0f,0.0f, 1.0, 0.0f,															//z
-					0.0f, 0.0f, 0.0f, 1.0f };
-		// X軸回転行列の各要素を設定する
-		matRotX = { 1.0f, 0.0f, 0.0f, 0.0f,															//x
-					0.0f, cos(worldTransform.rotation_.x), sin(worldTransform.rotation_.x), 0.0f,	//y
-					0.0f, -sin(worldTransform.rotation_.x), cos(worldTransform.rotation_.x), 0.0f,//z
-					0.0f, 0.0f, 0.0f, 1.0f };
-		// Y軸回転行列の各要素を設定する
-		matRotY = { cos(worldTransform.rotation_.y), 0.0f, -sin(worldTransform.rotation_.y), 0.0f,//x
-					0.0f, 1.0f, 0.0f, 0.0f,	//y
-					sin(worldTransform.rotation_.y),0.0f, cos(worldTransform.rotation_.y), 0.0f,//z
-					0.0f, 0.0f, 0.0f, 1.0f };
-
-		// 各軸の回転行列を合成
-
-		matRot = matRotZ;
-		matRot *= matRotX;
-		matRot *= matRotY;
-
-		// 合成用回転行列を宣言
-		Matrix4 matTrans;
-		//matTrans = MathUtility::Matrix4Identity();
-
-		// 移動量を行列に設定する。
-		matTrans = { 1,0,0,0,
-					 0,1,0,0,
-					 0,0,1,0,
-					 worldTransform.translation_.x,worldTransform.translation_.y,worldTransform.translation_.z,1 };
-
-		// 行列の合成
-		worldTransform.matWorld_ = MathUtility::Matrix4Identity();
-		worldTransform.matWorld_ *= matScale;
-		worldTransform.matWorld_ *= matRot;
-		worldTransform.matWorld_ *= matTrans;
-
-		// 行列の転送
-		worldTransform.TransferMatrix();
+		worldTransform.Affin();
 	}
 }
 
