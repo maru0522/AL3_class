@@ -20,15 +20,17 @@ class GameScene {
 public:
 	// パーツID
 	enum PartId {
-		Root,		// 大元
-		Spine,	// 脊椎
-		Chest,	// 胸
-		Head,		// 頭
-		ArmL,		// 左腕
-		ArmR,		// 右腕
-		Hip,		// 尻
-		LegL,		// 左足
-		LegR,		// 右足
+		kRoot,		// 大元
+		kSpine,		// 脊椎
+		kChest,		// 胸
+		kHead,		// 頭
+		kArmL,		// 左腕
+		kArmR,		// 右腕
+		kHip,		// 尻
+		kLegL,		// 左足
+		kLegR,		// 右足
+
+		kNumPartId
 	};
 
 public: // メンバ関数
@@ -54,8 +56,8 @@ public: // メンバ関数
 	/// </summary>
 	void Initialize();
 
-	void UpdateMatrix(int idx);
-	void UpdateMatrixChild(int idx);
+	void UpdateMatrix(WorldTransform& worldtransform);
+	void UpdateMatrixChild(int idxChild,int idxParent);
 
 	/// <summary>
 	/// 毎フレーム処理

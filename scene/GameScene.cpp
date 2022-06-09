@@ -221,12 +221,44 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("Task1_2Resources/mario.jpg");
 
-	// 親（0番）
-	worldTransforms_[0].Initialize();
-	// 子（1番）
-	worldTransforms_[1].Initialize();
-	worldTransforms_[1].translation_ = { 0.0f,4.5f,0.0f };
-	worldTransforms_[1].parent_ = &worldTransforms_[0];
+	// 大元
+	worldTransforms_[PartId::kRoot].Initialize();
+	// 脊椎
+	worldTransforms_[PartId::kSpine].Initialize();
+	worldTransforms_[PartId::kSpine].parent_ = &worldTransforms_[kRoot];
+	worldTransforms_[PartId::kSpine].translation_ = { 0.0f,4.5f,0.0f };
+
+	// 上半身
+	// 胸
+	worldTransforms_[PartId::kChest].translation_ = { 0,0,0 };
+	worldTransforms_[PartId::kChest].parent_ = &worldTransforms_[PartId::kSpine];
+	worldTransforms_[PartId::kChest].Initialize();
+	// 頭
+	worldTransforms_[PartId::kHead].translation_ = { 0, 3,0 };
+	worldTransforms_[PartId::kHead].parent_ = &worldTransforms_[PartId::kChest];
+	worldTransforms_[PartId::kHead].Initialize();
+	// 左腕
+	worldTransforms_[PartId::kArmL].translation_ = { -3,0,0 };
+	worldTransforms_[PartId::kArmL].parent_ = &worldTransforms_[PartId::kChest];
+	worldTransforms_[PartId::kArmL].Initialize();
+	// 右腕
+	worldTransforms_[PartId::kArmR].translation_ = { 3,0,0 };
+	worldTransforms_[PartId::kArmR].parent_ = &worldTransforms_[PartId::kChest];
+	worldTransforms_[PartId::kArmR].Initialize();
+	// 下半身
+	// 尻
+	worldTransforms_[PartId::kHip].translation_ = { 0,-3,0 };
+	worldTransforms_[PartId::kHip].parent_ = &worldTransforms_[PartId::kSpine];
+	worldTransforms_[PartId::kHip].Initialize();
+	// 左足
+	worldTransforms_[PartId::kLegL].translation_ = { -3,-3,0 };
+	worldTransforms_[PartId::kLegL].parent_ = &worldTransforms_[PartId::kHip];
+	worldTransforms_[PartId::kLegL].Initialize();
+	// 右足
+	worldTransforms_[PartId::kLegR].translation_ = { 3,-3,0 };
+	worldTransforms_[PartId::kLegR].parent_ = &worldTransforms_[PartId::kHip];
+	worldTransforms_[PartId::kLegR].Initialize();
+
 
 
 	//ビュープロジェクションの初期化
@@ -243,14 +275,14 @@ void GameScene::Initialize() {
 
 }
 
-void GameScene::UpdateMatrix(int idx)
+void GameScene::UpdateMatrix(WorldTransform& worldTransform_)
 {
 	// スケーリング行列を宣言
 	Matrix4 matScale;
 	// スケーリング倍率を行列に設定する
-	matScale = { worldTransforms_[idx].scale_.x, 0.0f, 0.0f, 0.0f,//x
-				 0.0f, worldTransforms_[idx].scale_.y, 0.0f, 0.0f,//y
-				 0.0f, 0.0f, worldTransforms_[idx].scale_.z, 0.0f,//z
+	matScale = { worldTransform_.scale_.x, 0.0f, 0.0f, 0.0f,//x
+				 0.0f, worldTransform_.scale_.y, 0.0f, 0.0f,//y
+				 0.0f, 0.0f, worldTransform_.scale_.z, 0.0f,//z
 				 0.0f, 0.0f, 0.0f, 1.0f };
 
 	// 合成用回転行列を宣言
@@ -259,19 +291,19 @@ void GameScene::UpdateMatrix(int idx)
 	Matrix4 matRotX, matRotY, matRotZ;
 
 	// Z軸回転行列の各要素を設定する
-	matRotZ = { cos(worldTransforms_[idx].rotation_.z), sin(worldTransforms_[idx].rotation_.z), 0.0f, 0.0f,	//x
-				-sin(worldTransforms_[idx].rotation_.z), cos(worldTransforms_[idx].rotation_.z), 0.0f, 0.0f,//y
+	matRotZ = { cos(worldTransform_.rotation_.z), sin(worldTransform_.rotation_.z), 0.0f, 0.0f,	//x
+				-sin(worldTransform_.rotation_.z), cos(worldTransform_.rotation_.z), 0.0f, 0.0f,//y
 				0.0f,0.0f, 1.0, 0.0f,																//z
 				0.0f, 0.0f, 0.0f, 1.0f };
 	// X軸回転行列の各要素を設定する
 	matRotX = { 1.0f, 0.0f, 0.0f, 0.0f,																//x
-				0.0f, cos(worldTransforms_[idx].rotation_.x), sin(worldTransforms_[idx].rotation_.x), 0.0f,	//y
-				0.0f, -sin(worldTransforms_[idx].rotation_.x), cos(worldTransforms_[idx].rotation_.x), 0.0f,//z
+				0.0f, cos(worldTransform_.rotation_.x), sin(worldTransform_.rotation_.x), 0.0f,	//y
+				0.0f, -sin(worldTransform_.rotation_.x), cos(worldTransform_.rotation_.x), 0.0f,//z
 				0.0f, 0.0f, 0.0f, 1.0f };
 	// Y軸回転行列の各要素を設定する
-	matRotY = { cos(worldTransforms_[idx].rotation_.y), 0.0f, -sin(worldTransforms_[idx].rotation_.y), 0.0f,//x
+	matRotY = { cos(worldTransform_.rotation_.y), 0.0f, -sin(worldTransform_.rotation_.y), 0.0f,//x
 				0.0f, 1.0f, 0.0f, 0.0f,	//y
-				sin(worldTransforms_[idx].rotation_.y),0.0f, cos(worldTransforms_[idx].rotation_.y), 0.0f,	//z
+				sin(worldTransform_.rotation_.y),0.0f, cos(worldTransform_.rotation_.y), 0.0f,	//z
 				0.0f, 0.0f, 0.0f, 1.0f };
 
 	// 各軸の回転行列を合成
@@ -288,74 +320,77 @@ void GameScene::UpdateMatrix(int idx)
 	matTrans = { 1,0,0,0,
 				 0,1,0,0,
 				 0,0,1,0,
-				 worldTransforms_[idx].translation_.x,worldTransforms_[idx].translation_.y,worldTransforms_[idx].translation_.z,1 };
+				 worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z,1 };
 
 	// 行列の合成
-	worldTransforms_[idx].matWorld_ = MathUtility::Matrix4Identity();
-	worldTransforms_[idx].matWorld_ *= matScale;
-	worldTransforms_[idx].matWorld_ *= matRot;
-	worldTransforms_[idx].matWorld_ *= matTrans;
+	worldTransform_.matWorld_ = MathUtility::Matrix4Identity();
+	worldTransform_.matWorld_ *= matScale;
+	worldTransform_.matWorld_ *= matRot;
+	worldTransform_.matWorld_ *= matTrans;
+	if (worldTransform_.parent_) {
+		worldTransform_.matWorld_ *= worldTransform_.parent_->matWorld_;
+	}
 
 	// 行列の転送
-	worldTransforms_[idx].TransferMatrix();
+	worldTransform_.TransferMatrix();
 }
-void GameScene::UpdateMatrixChild(int idx)
-{
-	// スケーリング行列を宣言
-	Matrix4 matScale;
-	// スケーリング倍率を行列に設定する
-	matScale = { worldTransforms_[idx].scale_.x, 0.0f, 0.0f, 0.0f,//x
-				 0.0f, worldTransforms_[idx].scale_.y, 0.0f, 0.0f,//y
-				 0.0f, 0.0f, worldTransforms_[idx].scale_.z, 0.0f,//z
-				 0.0f, 0.0f, 0.0f, 1.0f };
-
-	// 合成用回転行列を宣言
-	Matrix4 matRot;
-	// 各軸用回転行列を宣言
-	Matrix4 matRotX, matRotY, matRotZ;
-
-	// Z軸回転行列の各要素を設定する
-	matRotZ = { cos(worldTransforms_[idx].rotation_.z), sin(worldTransforms_[idx].rotation_.z), 0.0f, 0.0f,	//x
-				-sin(worldTransforms_[idx].rotation_.z), cos(worldTransforms_[idx].rotation_.z), 0.0f, 0.0f,//y
-				0.0f,0.0f, 1.0, 0.0f,																//z
-				0.0f, 0.0f, 0.0f, 1.0f };
-	// X軸回転行列の各要素を設定する
-	matRotX = { 1.0f, 0.0f, 0.0f, 0.0f,																//x
-				0.0f, cos(worldTransforms_[idx].rotation_.x), sin(worldTransforms_[idx].rotation_.x), 0.0f,	//y
-				0.0f, -sin(worldTransforms_[idx].rotation_.x), cos(worldTransforms_[idx].rotation_.x), 0.0f,//z
-				0.0f, 0.0f, 0.0f, 1.0f };
-	// Y軸回転行列の各要素を設定する
-	matRotY = { cos(worldTransforms_[idx].rotation_.y), 0.0f, -sin(worldTransforms_[idx].rotation_.y), 0.0f,//x
-				0.0f, 1.0f, 0.0f, 0.0f,	//y
-				sin(worldTransforms_[idx].rotation_.y),0.0f, cos(worldTransforms_[idx].rotation_.y), 0.0f,	//z
-				0.0f, 0.0f, 0.0f, 1.0f };
-
-	// 各軸の回転行列を合成
-
-	matRot = matRotZ;
-	matRot *= matRotX;
-	matRot *= matRotY;
-
-	// 合成用回転行列を宣言
-	Matrix4 matTrans;
-	//matTrans = MathUtility::Matrix4Identity();
-
-	// 移動量を行列に設定する。
-	matTrans = { 1,0,0,0,
-				 0,1,0,0,
-				 0,0,1,0,
-				 worldTransforms_[idx].translation_.x,worldTransforms_[idx].translation_.y,worldTransforms_[idx].translation_.z,1 };
-
-	// 行列の合成
-	worldTransforms_[idx].matWorld_ = MathUtility::Matrix4Identity();
-	worldTransforms_[idx].matWorld_ *= matScale;
-	worldTransforms_[idx].matWorld_ *= matRot;
-	worldTransforms_[idx].matWorld_ *= matTrans;
-	worldTransforms_[idx].matWorld_ *= worldTransforms_[0].matWorld_;
-
-	// 行列の転送
-	worldTransforms_[idx].TransferMatrix();
-}
+//void GameScene::UpdateMatrixChild(int idx, int idxParent)
+//{
+//	// スケーリング行列を宣言
+//	Matrix4 matScale;
+//	// スケーリング倍率を行列に設定する
+//	matScale = { worldTransforms_[idx].scale_.x, 0.0f, 0.0f, 0.0f,//x
+//				 0.0f, worldTransforms_[idx].scale_.y, 0.0f, 0.0f,//y
+//				 0.0f, 0.0f, worldTransforms_[idx].scale_.z, 0.0f,//z
+//				 0.0f, 0.0f, 0.0f, 1.0f };
+//
+//	// 合成用回転行列を宣言
+//	Matrix4 matRot;
+//	// 各軸用回転行列を宣言
+//	Matrix4 matRotX, matRotY, matRotZ;
+//
+//	// Z軸回転行列の各要素を設定する
+//	matRotZ = { cos(worldTransforms_[idx].rotation_.z), sin(worldTransforms_[idx].rotation_.z), 0.0f, 0.0f,	//x
+//				-sin(worldTransforms_[idx].rotation_.z), cos(worldTransforms_[idx].rotation_.z), 0.0f, 0.0f,//y
+//				0.0f,0.0f, 1.0, 0.0f,																//z
+//				0.0f, 0.0f, 0.0f, 1.0f };
+//	// X軸回転行列の各要素を設定する
+//	matRotX = { 1.0f, 0.0f, 0.0f, 0.0f,																//x
+//				0.0f, cos(worldTransforms_[idx].rotation_.x), sin(worldTransforms_[idx].rotation_.x), 0.0f,	//y
+//				0.0f, -sin(worldTransforms_[idx].rotation_.x), cos(worldTransforms_[idx].rotation_.x), 0.0f,//z
+//				0.0f, 0.0f, 0.0f, 1.0f };
+//	// Y軸回転行列の各要素を設定する
+//	matRotY = { cos(worldTransforms_[idx].rotation_.y), 0.0f, -sin(worldTransforms_[idx].rotation_.y), 0.0f,//x
+//				0.0f, 1.0f, 0.0f, 0.0f,	//y
+//				sin(worldTransforms_[idx].rotation_.y),0.0f, cos(worldTransforms_[idx].rotation_.y), 0.0f,	//z
+//				0.0f, 0.0f, 0.0f, 1.0f };
+//
+//	// 各軸の回転行列を合成
+//
+//	matRot = matRotZ;
+//	matRot *= matRotX;
+//	matRot *= matRotY;
+//
+//	// 合成用回転行列を宣言
+//	Matrix4 matTrans;
+//	//matTrans = MathUtility::Matrix4Identity();
+//
+//	// 移動量を行列に設定する。
+//	matTrans = { 1,0,0,0,
+//				 0,1,0,0,
+//				 0,0,1,0,
+//				 worldTransforms_[idx].translation_.x,worldTransforms_[idx].translation_.y,worldTransforms_[idx].translation_.z,1 };
+//
+//	// 行列の合成
+//	worldTransforms_[idx].matWorld_ = MathUtility::Matrix4Identity();
+//	worldTransforms_[idx].matWorld_ *= matScale;
+//	worldTransforms_[idx].matWorld_ *= matRot;
+//	worldTransforms_[idx].matWorld_ *= matTrans;
+//	worldTransforms_[idx].matWorld_ *= worldTransforms_[idxParent].matWorld_;
+//
+//	// 行列の転送
+//	worldTransforms_[idx].TransferMatrix();
+//}
 
 void GameScene::Update() {
 	//デバックカメラの更新
@@ -376,8 +411,7 @@ void GameScene::Update() {
 			move = { kCharacterSpeed,0,0 };
 		}
 
-		worldTransforms_[0].translation_ += move;
-		UpdateMatrix(0);
+		worldTransforms_[PartId::kRoot].translation_ += move;
 		
 		debugText_->SetPos(50, 150);
 		debugText_->Printf("worldTransforms_[%d].translation:(%f,%f,%f)", 0, 
@@ -385,11 +419,33 @@ void GameScene::Update() {
 						   worldTransforms_[0].translation_.y,
 						   worldTransforms_[0].translation_.z);
 
-		// 子の更新
-		{
-			UpdateMatrixChild(1);
+		for (int i = 0; i < kNumPartId; i++) {
+			UpdateMatrix(worldTransforms_[i]);
 		}
 	}
+
+	// 上半身回転処理
+	{
+		// 押した方向で移動ベクトルを変更
+		if (input_->PushKey(DIK_U)) {
+			worldTransforms_[PartId::kChest].rotation_.y -= 0.05;
+		}
+		if (input_->PushKey(DIK_I)) {
+			worldTransforms_[PartId::kChest].rotation_.y += 0.05;
+		}
+	}
+
+	// 下半身回転処理
+	{
+		// 押した方向で移動ベクトルを変更
+		if (input_->PushKey(DIK_J)) {
+			worldTransforms_[PartId::kHip].rotation_.y -= 0.05;
+		}
+		if (input_->PushKey(DIK_K)) {
+			worldTransforms_[PartId::kHip].rotation_.y += 0.05;
+		}
+	}
+
 }
 
 void GameScene::Draw() {
@@ -420,8 +476,9 @@ void GameScene::Draw() {
 	/// </summary>
 	////3Dモデルの描画
 
-	model_->Draw(worldTransforms_[0], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[1], viewProjection_, textureHandle_);
+	for (int i = 2; i < kNumPartId; i++) {
+		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
