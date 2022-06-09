@@ -50,13 +50,15 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
 	Model* model_ = nullptr;
-	//DebugCamera* debugCamera_ = nullptr;
+	DebugCamera* debugCamera_ = nullptr;
+	bool isDebugCameraActive_ = false;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t reticleHandle_ = 0;
 
 	ViewProjection viewProjection_;
+	ViewProjection debugViewProjection_;
 
 	//
 	Sprite* sprite_ = nullptr;

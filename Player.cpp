@@ -26,10 +26,10 @@ void Player::Move()
 
 	// 押した方向で移動ベクトルを変更
 	if (input_->PushKey(DIK_W)) {
-		move = { 0,0,kCharacterSpeed };
+		move = { 0,kCharacterSpeed,0 };
 	}
 	if (input_->PushKey(DIK_S)) {
-		move = { 0,0,-kCharacterSpeed };
+		move = { 0,-kCharacterSpeed,0 };
 	}
 	if (input_->PushKey(DIK_A)) {
 		move = {-kCharacterSpeed,0,0};
@@ -42,16 +42,24 @@ void Player::Move()
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
-	
+	// 移動限界座標
+	const float kMoveLimitX = 34;
+	const float kMoveLimitY = 18;
+
+	// 範囲を超えない処理
+	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
+	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 }
 
-void Player::Update(ViewProjection viewProjection)
+void Player::Update()
 {
 	debugText_->SetPos(50,50);
 	debugText_->Printf("player:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 
 	Move();
-	viewProjection.UpdateMatrix();
+	worldTransform_.UpdateMatrix();
 }
 
 void Player::Draw(ViewProjection viewProjection)

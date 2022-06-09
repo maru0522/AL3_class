@@ -8,7 +8,7 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
-	//delete debugCamera_;
+	delete debugCamera_;
 	delete player_;
 }
 
@@ -23,16 +23,16 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("Task1_2Resources/mario.jpg");
 
 	//デバックカメラの生成
-	//debugCamera_ = new DebugCamera(1280, 720);
+	debugCamera_ = new DebugCamera(1280, 720);
 
 	viewProjection_.Initialize();
 
-	////軸方向表示の有効化
-	//AxisIndicator::GetInstance()->SetVisible(true);
-	////軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
-	//AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
-	////ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
-	//PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
+	//軸方向表示の有効化
+	AxisIndicator::GetInstance()->SetVisible(true);
+	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
 	// 自キャラの生成
 	player_ = new Player();
@@ -41,11 +41,32 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	//デバックカメラの更新
-	//debugCamera_->Update();
 
 	// 自キャラの更新
-	player_->Update(viewProjection_);
+	player_->Update();
+
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_C)) {
+		if (isDebugCameraActive_) {
+			isDebugCameraActive_ = false;
+		}
+		else {
+			isDebugCameraActive_ = true;
+		}
+	}
+
+	// カメラの処理
+	if (isDebugCameraActive_) {
+		//デバックカメラの更新
+		debugCamera_->Update();
+		debugViewProjection_ = debugCamera_->GetViewProjection();
+		viewProjection_.matView = debugViewProjection_.matView;
+		viewProjection_.matProjection = debugViewProjection_.matProjection;
+	}
+	else {
+		viewProjection_.UpdateMatrix();
+	}
+#endif
 }
 
 void GameScene::Draw() {
@@ -77,10 +98,10 @@ void GameScene::Draw() {
 	////3Dモデルの描画
 	// model_->Draw(worldTransform_,viewProjection_,textureHandle_);
 	////モデルと連動させるカメラの描画
-	// model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	 //model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 
 	// 自キャラの描画
-	player_->Draw(viewProjection_);
+	player_->Draw(debugCamera_->GetViewProjection());
 
 	//ラインの描画
 
