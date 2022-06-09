@@ -120,6 +120,17 @@ void GameScene::UpRot()
 
 void GameScene::Initialize() {
 
+	// 乱数シード生成器
+	std::random_device seed_gen;
+	// メルセンヌ・ツイスターの乱数エンジン
+	std::mt19937_64 engin(seed_gen());
+	// 乱数範囲の指定
+	std::uniform_real_distribution<float> dist(0, 100);
+	// 乱数範囲(回転角用)
+	std::uniform_real_distribution<float> rotDist(0.0f, 2 * PI);
+	// 乱数範囲(座標用)
+	std::uniform_real_distribution<float> posDist(-10.0f, 10.0f);
+
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -128,7 +139,39 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("Task1_2Resources/mario.jpg");
 
-	Afiin();
+	// 範囲forで全てのワールドトランスフォームを順に処理する
+	for (WorldTransform& worldTransform : worldTransforms_) {
+		//ワールドトランスフォームの初期化
+		worldTransform.Initialize();
+
+		// X, Y, Z方向のスケーリングを設定
+		worldTransform.scale_ = { 1,1,1 };
+		// X, Y, Z 軸周りの回転角を設定
+		worldTransform.rotation_ = { rotDist(engin),rotDist(engin),rotDist(engin) };
+		// X, Y, Z 軸周りの平行移動を設定
+		worldTransform.translation_ = { posDist(engin),posDist(engin),posDist(engin) };
+
+		Matrix4 matScale_ = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixScale(matScale_);
+
+		Matrix4 matRotZ_ = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixRotateZ(matRotZ_);
+		Matrix4 matRotX_ = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixRotateX(matRotX_);
+		Matrix4 matRotY_ = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixRotateY(matRotY_);
+
+		Matrix4 matRot_ = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixRotate(matRot_, matRotX_, matRotY_, matRotZ_);
+		
+		Matrix4 matTrans_ = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixTranslate(matTrans_);
+
+		Matrix4 matWorldTransform = MathUtility::Matrix4Identity();
+		worldTransform.SetMatrixWorldTransform(matWorldTransform, matScale_, matRot_, matTrans_);
+
+		worldTransform.TransferMatrix();
+	}
 
 	//viewProjection_.eye = { 0,0,-10 };
 
