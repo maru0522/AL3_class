@@ -4,6 +4,7 @@
 #include <cassert>
 #include "input.h"
 #include "DebugText.h"
+#include "PlayerBullet.h"
 
 class Player
 {
@@ -12,6 +13,10 @@ public:
 	void Initialize(Model* model,uint32_t textureHandle);
 	// ˆÚ“®
 	void Move();
+	// ²‰ñ“]
+	void Rotate();
+	// UŒ‚
+	void Attack();
 	// XV
 	void Update();
 	// •`‰æ
@@ -28,4 +33,6 @@ private:
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
 
+	// ’e
+	PlayerBullet* bullet_ = nullptr;
 };

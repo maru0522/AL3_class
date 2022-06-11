@@ -53,16 +53,46 @@ void Player::Move()
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 }
 
+void Player::Rotate()
+{
+	if (input_->PushKey(DIK_U)) {
+		worldTransform_.rotation_.y -= 0.05f;
+	}
+	if (input_->PushKey(DIK_I)) {
+		worldTransform_.rotation_.y += 0.05f;
+	}
+	
+}
+
+void Player::Attack()
+{
+	if (input_->PushKey(DIK_SPACE)) {
+		// ’e‚ð”­ŽË‚µA‰Šú‰»
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+
+		bullet_ = newBullet;
+	}
+}
+
 void Player::Update()
 {
 	debugText_->SetPos(50,50);
 	debugText_->Printf("player:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 
 	Move();
+	Rotate();
+	Attack();
+	if (bullet_) {
+		bullet_->Update();
+	}
 	worldTransform_.UpdateMatrix();
 }
 
 void Player::Draw(ViewProjection viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 }
