@@ -5,6 +5,8 @@
 #include "input.h"
 #include "DebugText.h"
 #include "PlayerBullet.h"
+#include <memory>
+#include <list>
 
 class Player
 {
@@ -34,5 +36,5 @@ private:
 	DebugText* debugText_ = nullptr;
 
 	// ’e
-	PlayerBullet* bullet_ = nullptr;
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 };
