@@ -16,59 +16,6 @@
 /// ゲームシーン
 /// </summary>
 class GameScene {
-
-public:
-	// パーツID
-	enum PartId {
-		kRoot,		// 大元
-		kSpine,		// 脊椎
-		kChest,		// 胸
-		kHead,		// 頭
-		kArmL,		// 左腕
-		kArmR,		// 右腕
-		kHip,		// 尻
-		kLegL,		// 左足
-		kLegR,		// 右足
-
-		kNumPartId
-	};
-
-public: // メンバ関数
-  /// <summary>
-  /// コンストクラタ
-  /// </summary>
-	GameScene();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~GameScene();
-
-	void Afiin();
-	void EyeMove();
-	void TargetMove();
-	void UpRot();
-	void SetFovAngleY();
-	void SetNearZ();
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize();
-
-	void UpdateMatrix(WorldTransform& worldtransform);
-	void UpdateMatrixChild(int idxChild,int idxParent);
-
-	/// <summary>
-	/// 毎フレーム処理
-	/// </summary>
-	void Update();
-
-	/// <summary>
-	/// 描画
-	/// </summary>
-	void Draw();
-
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -97,4 +44,54 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+public:
+	// パーツID
+	enum PartId {
+		kRoot,		// 大元
+		kSpine,		// 脊椎
+		kChest,		// 胸
+		kHead,		// 頭
+		kArmL,		// 左腕
+		kArmR,		// 右腕
+		kHip,		// 尻
+		kLegL,		// 左足
+		kLegR,		// 右足
+
+		kNumPartId
+	};
+
+public: // メンバ関数
+  /// <summary>
+  /// コンストクラタ
+  /// </summary>
+	GameScene();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~GameScene();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
+
+	/// <summary>
+	/// 毎フレーム処理
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
+
+	// 行列の更新
+	void Transform(WorldTransform& worldtransform);
+
+	// 度数法(degree)から弧度法(radian)
+	float Deg2Rad(int degree) { return (degree * PI / 180); }
+	// 弧度法(radian)から度数法(degree)
+	float Rad2Deg(int radian) { return (180 / PI * radian); }
 };
