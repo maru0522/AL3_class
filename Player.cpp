@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Calc.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle)
 {
@@ -67,9 +68,16 @@ void Player::Rotate()
 void Player::Attack()
 {
 	if (input_->PushKey(DIK_SPACE)) {
+		// 弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		velocity = Calc::DotVecMat(velocity, worldTransform_.matWorld_);
+
 		// 弾を発射し、初期化
 		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(model_, worldTransform_.translation_);
+		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
 
 		// 弾を登録する
 		bullets_.push_back(std::move(newBullet));
@@ -78,6 +86,11 @@ void Player::Attack()
 
 void Player::Update()
 {
+	// デスフラグの立った弾を削除
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bulet) {
+		return bulet->isDead();
+					   });
+
 	debugText_->SetPos(50,50);
 	debugText_->Printf("player:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 

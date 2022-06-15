@@ -57,7 +57,6 @@ void WorldTransform::SetMatrixWorldTransform(Matrix4& worldTransform_, Matrix4 m
 }
 
 
-
 void WorldTransform::Scale()
 {
 	// スケーリング行列を宣言
