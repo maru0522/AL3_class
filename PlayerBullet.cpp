@@ -16,6 +16,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	velocity_ = velocity;
 }
 
+
 void PlayerBullet::Update()
 {
 	// ç¿ïWÇà⁄ìÆÇ≥ÇπÇÈ
@@ -27,6 +28,7 @@ void PlayerBullet::Update()
 		isDead_ = true;	
 	}
 }
+
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection)
 {

@@ -91,15 +91,26 @@ void Player::Update()
 		return bulet->isDead();
 					   });
 
+	// デバッグテキスト
 	debugText_->SetPos(50,50);
-	debugText_->Printf("player:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
+	debugText_->Printf("player:(%f,%f,%f)",
+					   worldTransform_.translation_.x,
+					   worldTransform_.translation_.y,
+					   worldTransform_.translation_.z);
 
+	// 移動
 	Move();
+	// 回転
 	Rotate();
+	// 弾発射
 	Attack();
+
+	// 弾更新
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
 		bullet->Update();
 	}
+
+	//ワールド行列更新
 	worldTransform_.UpdateMatrix();
 }
 
