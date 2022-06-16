@@ -4,7 +4,7 @@
 #include <cassert>
 #include "input.h"
 #include "DebugText.h"
-#include "PlayerBullet.h"
+#include "playerBullet/PlayerBullet.h"
 
 class Player
 {

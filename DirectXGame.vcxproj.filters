@@ -49,6 +49,12 @@
     <Filter Include="ヘッダー ファイル\math">
       <UniqueIdentifier>{647f4977-924a-4954-923f-5619e5afc9a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="player">
+      <UniqueIdentifier>{36d1387d-41b0-4586-a69e-00d48d99e2a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playerBullet">
+      <UniqueIdentifier>{0038808e-4883-4e29-b12b-9137f0e4fc4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -77,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="PlayerBullet.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="player\Player.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="playerBullet\PlayerBullet.cpp">
+      <Filter>playerBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +181,12 @@
     </ClInclude>
     <ClInclude Include="PlayerBullet.h">
       <Filter>ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="player\Player.h">
+      <Filter>player</Filter>
+    </ClInclude>
+    <ClInclude Include="playerBullet\PlayerBullet.h">
+      <Filter>playerBullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

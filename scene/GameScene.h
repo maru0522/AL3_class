@@ -11,7 +11,7 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "math.h"
-#include "Player.h"
+#include "player/Player.h"
 
 /// <summary>
 /// ゲームシーン
