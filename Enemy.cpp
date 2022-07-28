@@ -12,6 +12,8 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle)
     // シングルトンインスタンスの取得
     debugText_ = DebugText::GetInstance();
 
+    worldTransform_.translation_.z = 30;
+
     worldTransform_.Initialize();
 }
 
@@ -24,6 +26,18 @@ void Enemy::Update()
                        worldTransform_.translation_.x,
                        worldTransform_.translation_.y,
                        worldTransform_.translation_.z);
+
+    // キャラクターの移動ベクトル
+    Vector3 move = { 0,0,0 };
+
+    // キャラクターの移動速さ
+    const float kCharacterSpeed = 0.2f;
+
+    move = { 0,0,-kCharacterSpeed };
+
+    worldTransform_.translation_.x += move.x;
+    worldTransform_.translation_.y += move.y;
+    worldTransform_.translation_.z += move.z;
 
     //ワールド行列更新
     worldTransform_.UpdateMatrix();
