@@ -27,17 +27,26 @@ void Enemy::Update()
                        worldTransform_.translation_.y,
                        worldTransform_.translation_.z);
 
-    // キャラクターの移動ベクトル
+    const float kApproachSpeed = 0.2f;
     Vector3 move = { 0,0,0 };
 
-    // キャラクターの移動速さ
-    const float kCharacterSpeed = 0.2f;
-
-    move = { 0,0,-kCharacterSpeed };
-
-    worldTransform_.translation_.x += move.x;
-    worldTransform_.translation_.y += move.y;
-    worldTransform_.translation_.z += move.z;
+    switch (phase_) {
+        case Phase::Approach:
+        default:
+            move = { 0,0,-kApproachSpeed };
+            // 移動（ベクトルを加算）
+            worldTransform_.translation_ += move;
+            // 規定の位置に到達したら離脱
+            if (worldTransform_.translation_.z < 0.0f) {
+                phase_ = Phase::Leave;
+            }
+            break;
+        case Phase::Leave:
+            Vector3 move = { -kApproachSpeed,kApproachSpeed,0 };
+            // 移動（ベクトルを加算）
+            worldTransform_.translation_ += move;
+            break;
+    }
 
     //ワールド行列更新
     worldTransform_.UpdateMatrix();

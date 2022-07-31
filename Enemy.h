@@ -5,6 +5,11 @@
 #include "input.h"
 #include "DebugText.h"
 
+enum class Phase {
+	Approach,	// 接近する
+	Leave,		// 離脱する
+};
+
 class Enemy
 {
 private:
@@ -16,6 +21,9 @@ private:
 	uint32_t textureHandle_ = 0;
 
 	DebugText* debugText_ = nullptr;
+
+	// フェーズ
+	Phase phase_ = Phase::Approach;
 
 public:
 	void Initialize(Model* model, uint32_t textureHandle);
