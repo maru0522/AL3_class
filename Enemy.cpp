@@ -17,6 +17,11 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle)
     worldTransform_.Initialize();
 }
 
+// staticで宣言したメンバ関数ポインタテーブルの実体
+void (Enemy::* Enemy::spFuncTable[])() = {
+    &Enemy::Approach,       // 要素番号1
+    &Enemy::Leave
+};
 
 void Enemy::Update()
 {
@@ -56,4 +61,29 @@ void Enemy::Update()
 void Enemy::Draw(ViewProjection viewProjection)
 {
     model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+
+void Enemy::Approach()
+{
+    const float kApproachSpeed = 0.2f;
+    Vector3 move = { 0,0,0 };
+
+    move = { 0,0,-kApproachSpeed };
+    // 移動（ベクトルを加算）
+    worldTransform_.translation_ += move;
+    // 規定の位置に到達したら離脱
+    if (worldTransform_.translation_.z < 0.0f) {
+        phase_ = Phase::Leave;
+    }
+}
+
+void Enemy::Leave()
+{
+    const float kApproachSpeed = 0.2f;
+    Vector3 move = { 0,0,0 };
+
+    move = { -kApproachSpeed,kApproachSpeed,0 };
+    // 移動（ベクトルを加算）
+    worldTransform_.translation_ += move;
 }

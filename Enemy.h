@@ -25,9 +25,15 @@ private:
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 
+	// メンバ関数ポインタのテーブル
+	static void (Enemy::* spFuncTable[])();
+
 public:
 	void Initialize(Model* model, uint32_t textureHandle);
     void Update();
     void Draw(ViewProjection viewProjection);
+
+	void Approach();
+	void Leave();
 };
 
