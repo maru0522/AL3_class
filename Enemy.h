@@ -4,6 +4,7 @@
 #include <cassert>
 #include "input.h"
 #include "DebugText.h"
+#include "EnemyBullet.h"
 
 enum class Phase {
 	Approach,	// 接近する
@@ -13,6 +14,12 @@ enum class Phase {
 class Enemy
 {
 private:
+	// 発射間隔
+	static const int kFireInterval = 60;
+
+	// 発射タイマ
+	int32_t fireTimer = 0;
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -25,8 +32,15 @@ private:
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 
+	// 弾
+	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
 public:
 	void Initialize(Model* model, uint32_t textureHandle);
+	void Fire();
+	void PhaseInitApproach();
+	void PhaseApproach();
+	void PhaseLeave();
     void Update();
     void Draw(ViewProjection viewProjection);
 };
