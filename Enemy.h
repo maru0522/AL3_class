@@ -10,6 +10,33 @@ enum class Phase {
 	Leave,		// 離脱する
 };
 
+class Enemy;
+
+class EnemyState
+{
+public:
+	// 純粋仮想関数
+	virtual void Up(Enemy* pEnemy) = 0;
+	virtual void Down(Enemy* pEnemy) = 0;
+	virtual void ShowState() = 0;
+};
+
+class EnemyApproach : public EnemyState
+{
+public:
+	void Up(Enemy* pEnemy);
+	void Down(Enemy* pEnemy);
+	void ShowState();
+};
+
+class EnemyLeave : public EnemyState
+{
+public:
+	void Up(Enemy* pEnemy);
+	void Down(Enemy* pEnemy);
+	void ShowState();
+};
+
 class Enemy
 {
 private:
@@ -25,15 +52,20 @@ private:
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 
-	// メンバ関数ポインタのテーブル
-	static void (Enemy::* spFuncTable[])();
-
 public:
+	Enemy();
+	~Enemy();
+
 	void Initialize(Model* model, uint32_t textureHandle);
     void Update();
     void Draw(ViewProjection viewProjection);
 
-	void Approach();
-	void Leave();
-};
+	void Up();
+	void Down();
 
+	void ChangeState(EnemyState* newState);
+	void ShowNowState();
+
+private:
+	EnemyState* state;
+};

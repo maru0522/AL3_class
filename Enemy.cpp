@@ -1,4 +1,17 @@
 #include "Enemy.h"
+#include <iostream>
+
+
+
+Enemy::Enemy()
+{
+    state = new EnemyApproach();
+}
+
+Enemy::~Enemy()
+{
+    delete state;
+}
 
 void Enemy::Initialize(Model* model, uint32_t textureHandle)
 {
@@ -17,12 +30,6 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle)
     worldTransform_.Initialize();
 }
 
-// staticで宣言したメンバ関数ポインタテーブルの実体
-void (Enemy::* Enemy::spFuncTable[])() = {
-    &Enemy::Approach,       // 要素番号1
-    &Enemy::Leave           // 要素番号2
-};
-
 void Enemy::Update()
 {
     // デバッグテキスト
@@ -38,8 +45,6 @@ void Enemy::Update()
         phase_ = Phase::Leave;
     }
 
-    (this->*spFuncTable[static_cast<int>(phase_)])();
-
     //ワールド行列更新
     worldTransform_.UpdateMatrix();
 }
@@ -50,27 +55,58 @@ void Enemy::Draw(ViewProjection viewProjection)
     model_->Draw(worldTransform_, viewProjection, textureHandle_);
 }
 
-
-void Enemy::Approach()
+void Enemy::Up()
 {
-    const float kApproachSpeed = 0.2f;
-    Vector3 move = { 0,0,0 };
-
-    move = { 0,0,-kApproachSpeed };
-    // 移動（ベクトルを加算）
-    worldTransform_.translation_ += move;
-    // 規定の位置に到達したら離脱
-    if (worldTransform_.translation_.z < 0.0f) {
-        phase_ = Phase::Leave;
-    }
+    state->Up(this);
 }
 
-void Enemy::Leave()
+void Enemy::Down()
 {
-    const float kApproachSpeed = 0.2f;
-    Vector3 move = { 0,0,0 };
+    state->Down(this);
+}
 
-    move = { -kApproachSpeed,kApproachSpeed,0 };
-    // 移動（ベクトルを加算）
-    worldTransform_.translation_ += move;
+void Enemy::ChangeState(EnemyState* newState)
+{
+    delete state;
+    state = newState;
+}
+
+void Enemy::ShowNowState()
+{
+    state->ShowState();
+}
+
+// EnginApproachクラスの実装
+void EnemyApproach::Up(Enemy* pEnemy)
+{
+    std::cout << "Approach -> Leave" << std::endl;
+    pEnemy->ChangeState(new EnemyLeave());
+}
+
+void EnemyApproach::Down(Enemy* pEnemy)
+{
+    std::cout << "(Approach) 変更なし" << std::endl;
+    pEnemy->ChangeState(new EnemyApproach());
+}
+
+void EnemyApproach::ShowState()
+{
+    std::cout << "state : Approach" << std::endl;
+}
+
+void EnemyLeave::Up(Enemy* pEnemy)
+{
+    std::cout << "(Leave) 変更なし" << std::endl;
+    pEnemy->ChangeState(new EnemyApproach());
+}
+
+void EnemyLeave::Down(Enemy* pEnemy)
+{
+    std::cout << "Leave -> Approach" << std::endl;
+    pEnemy->ChangeState(new EnemyLeave());
+}
+
+void EnemyLeave::ShowState()
+{
+    std::cout << "state : Leave" << std::endl;
 }
