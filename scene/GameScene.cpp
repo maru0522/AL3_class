@@ -42,6 +42,7 @@ void GameScene::Initialize() {
 	enemy_ = std::make_unique<Enemy>();
 	// 敵の初期化
 	enemy_->Initialize(model_, textureHandle_);
+	enemy_->SetPlayer(player_.get());
 }
 
 void GameScene::Update() {

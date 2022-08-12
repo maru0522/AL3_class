@@ -6,6 +6,9 @@
 #include "DebugText.h"
 #include "EnemyBullet.h"
 
+// 自機クラスの前方宣言
+class Player;
+
 enum class Phase {
 	Approach,	// 接近する
 	Leave,		// 離脱する
@@ -35,6 +38,9 @@ private:
 	// 弾
 	std::list<std::unique_ptr<EnemyBullet>> bullets_;
 
+	// 自キャラ
+	Player* player_ = nullptr;
+
 public:
 	void Initialize(Model* model, uint32_t textureHandle);
 	void Fire();
@@ -43,5 +49,8 @@ public:
 	void PhaseLeave();
     void Update();
     void Draw(ViewProjection viewProjection);
+	void SetPlayer(Player* player) { player_ = player; }
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
 };
 

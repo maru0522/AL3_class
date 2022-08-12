@@ -1,5 +1,7 @@
+#include "Player.h"
 #include "Enemy.h"
 #include "Calc.h"
+#include "Vector3.h"
 
 void Enemy::Initialize(Model* model, uint32_t textureHandle)
 {
@@ -22,9 +24,25 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle)
 
 void Enemy::Fire()
 {
+    assert(player_);
+
+    // 弾の速度
+    const float kBulletSpeed = 0.5f;
+
+    // 自キャラのワールド座標を取得する
+    Vector3 pWorldPos = player_->GetWorldPosition();
+    // 敵キャラのワールド座標を取得する
+    Vector3 eWorldPos = GetWorldPosition();
+    // 敵キャラ->自キャラの差分ベクトルを求める
+    Vector3 diffWorldPos = pWorldPos - eWorldPos;
+    // ベクトルの正規化
+    diffWorldPos.normalize();
+    // ベクトルの長さを、速さに合わせる
+    diffWorldPos *= kBulletSpeed;
+
     // 弾を発射し、初期化
     std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
-    newBullet->Initialize(model_, worldTransform_.translation_, { 0.0f,0.0f,-1.0f });
+    newBullet->Initialize(model_, worldTransform_.translation_, diffWorldPos);
 
     // 弾を登録する
     bullets_.push_back(std::move(newBullet));
@@ -38,7 +56,7 @@ void Enemy::PhaseInitApproach()
 
 void Enemy::PhaseApproach()
 {
-    const float kApproachSpeed = 0.2f;
+    const float kApproachSpeed = 0.0f;
     Vector3 move = { 0,0,0 };
 
     move = { 0,0,-kApproachSpeed };
@@ -106,4 +124,16 @@ void Enemy::Draw(ViewProjection viewProjection)
     for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
         bullet->Draw(viewProjection);
     }
+}
+
+Vector3 Enemy::GetWorldPosition()
+{
+    // ワールド座標を入れる変数
+    Vector3 worldPos;
+    // ワールド行列の平行移動成分を取得（ワールド座標）
+    worldPos.x = worldTransform_.translation_.x;
+    worldPos.y = worldTransform_.translation_.y;
+    worldPos.z = worldTransform_.translation_.z;
+
+    return worldPos;
 }

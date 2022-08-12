@@ -24,6 +24,9 @@ public:
 	// 描画
 	void Draw(ViewProjection viewProjection);
 
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
