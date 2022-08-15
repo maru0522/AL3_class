@@ -10,10 +10,19 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 	textureHandle_ = TextureManager::Load("Task1_2Resources/enemyBullet.png");
 
 	worldTransform_.Initialize();
+
+	// Z方向に伸びた形状
+	worldTransform_.scale_.x = 0.5f;
+	worldTransform_.scale_.y = 0.5f;
+	worldTransform_.scale_.z = 3.0f;
+
 	// 引数で受け取った初期座標をセット
 	worldTransform_.translation_ = position;
 
 	velocity_ = velocity;
+
+	// Y軸周りの角度(θy)
+	worldTransform_.rotation_.y = std::atan2(velocity_.z, velocity_.x);
 }
 
 
