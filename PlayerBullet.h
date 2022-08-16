@@ -10,6 +10,12 @@ public:
 
 	bool isDead() const { return isDead_; }
 
+	// 衝突を検出したら呼びだされるコールバック関数
+	void OnCollision();
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;

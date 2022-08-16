@@ -50,6 +50,13 @@ public:
     void Update();
     void Draw(ViewProjection viewProjection);
 	void SetPlayer(Player* player) { player_ = player; }
+
+	// 衝突を検出したら呼びだされるコールバック関数
+	void OnCollision();
+
+	// 弾リストを取得
+	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 };

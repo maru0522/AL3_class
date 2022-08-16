@@ -91,6 +91,11 @@ void Enemy::PhaseLeave()
 
 void Enemy::Update()
 {
+    // デスフラグの立った弾を削除
+    bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bulet) {
+        return bulet->isDead();
+                       });
+
     // デバッグテキスト
     debugText_->SetPos(50, 70);
     debugText_->Printf("Enemy:(%f,%f,%f)",
@@ -124,6 +129,10 @@ void Enemy::Draw(ViewProjection viewProjection)
     for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
         bullet->Draw(viewProjection);
     }
+}
+
+void Enemy::OnCollision()
+{
 }
 
 Vector3 Enemy::GetWorldPosition()
